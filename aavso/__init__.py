@@ -1,1 +1,1 @@
-from aavso import *
+
