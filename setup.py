@@ -8,6 +8,6 @@ setup(
     keywords = "aavso photometry variable star",
     url = "https://github.com/seasidesparrow/AAVSO-analysis",
     install_requires = ['numpy', 'pandas', 'matplotlib'],
-    package_dir = {'aavso':'aavso'}
+    package_dir = {'aavso':'aavso'},
     packages=['aavso']
 )
