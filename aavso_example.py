@@ -15,7 +15,7 @@ def make_multipanel_light_curve_all_data():
                aavso.nonstandard_filter_delete(
                aavso.steps_delete(raw_data))))
 
-    aavso.multipanel_file(clean_data,7,outf='t_umi_all.png')
+    aavso.multipanel_file(clean_data,7,outf='r_aqr.png')
 
     return
 
@@ -25,14 +25,16 @@ def make_multipanel_light_curve_vis_pos():
     import pandas as pd
     import aavso
 
-    raw_data=aavso.aavso_csv_load(infile)
+    raw_data=aavso.invalids_delete(
+             aavso.aavso_csv_load(infile))
 
     clean_data=aavso.fainterthans_delete(
                aavso.differentials_delete(
                aavso.steps_delete(
                aavso.visual_estimates_only(raw_data))))
 
-    aavso.multipanel_file(clean_data,4,imtype='pdf',outf='t_umi_vis.pdf')
+
+    aavso.multipanel_file(clean_data,4,imtype='png',outf='r_aqr_vis.png')
 
     return
 
@@ -42,16 +44,96 @@ def make_multipanel_light_curve_transformed_phot():
     import pandas as pd
     import aavso
 
-    raw_data=aavso.aavso_csv_load(infile)
+    raw_data=aavso.invalids_delete(
+             aavso.aavso_csv_load(infile))
 
     clean_data=aavso.fainterthans_delete(
                aavso.differentials_delete(
                aavso.nonstandard_filter_delete(
                aavso.transformed_only(raw_data))))
 
-    aavso.multipanel_file(clean_data,5,outf='t_umi_phot.png')
+    aavso.multipanel_file(clean_data,5,outf='r_aqr_phot.png')
 
     return
+
+
+def perform_LS_periodogram():
+#   Note: Lomb-Scargle is not my favorite for AAVSO data, but just
+#   as an example....
+    import numpy as np
+    import pandas as pd
+    import aavso
+    from scipy.signal import lombscargle as ls
+    import matplotlib.pyplot as plt
+
+    raw_data=aavso.invalids_delete(
+             aavso.aavso_csv_load(infile))
+
+    clean_data=aavso.fainterthans_delete(
+               aavso.differentials_delete(
+               aavso.steps_delete(
+               aavso.visual_estimates_only(raw_data))))
+
+    midpoint_jd=aavso.midpoint_get(clean_data)
+
+    (star_jd,star_magn)=aavso.extract_timeseries(clean_data)
+
+    star_jd=star_jd-midpoint_jd
+
+    jd_span=max(star_jd)-min(star_jd)
+#   freq_min=2./jd_span
+    freq_min=1./600.
+    freq_max=1./100.
+    n_freq=freq_max*jd_span*16
+
+    test_freqs=np.linspace(freq_min,freq_max,n_freq)
+    ls_statistic=ls(star_jd,star_magn,test_freqs)
+    plt.plot(test_freqs,ls_statistic)
+    plt.show()
+
+    print("number of test frequencies: %d"%len(ls_statistic))
+
+    imax=np.where(ls_statistic==max(ls_statistic))
+    print("max freq: %s\tmax stat: %s"%(test_freqs[imax],ls_statistic[imax]))
+    print("strongest period:%f"%(1./(test_freqs[imax])))
+    print("Done perform_LS_periodogram!\n\n")
+
+    return
+
+
+
+def perform_wavelet_analysis():
+    import numpy as np
+    import pandas as pd
+    import aavso
+    from scipy import signal
+    import matplotlib.pyplot as plt
+
+    raw_data=aavso.invalids_delete(
+             aavso.aavso_csv_load(infile))
+
+    clean_data=aavso.fainterthans_delete(
+               aavso.differentials_delete(
+               aavso.steps_delete(
+               aavso.visual_estimates_only(raw_data))))
+
+    midpoint_jd=aavso.midpoint_get(clean_data)
+
+    (star_jd,star_magn)=aavso.extract_timeseries(clean_data)
+
+    star_jd=star_jd-midpoint_jd
+
+# Make a wavelet noise here
+
+    widths=np.arange(1,50)
+    cwtmatr=signal.cwt(star_magn,signal.ricker,widths)
+    plt.imshow(cwtmatr,extent=[min(star_jd),max(star_jd),1,50],cmap='gist_earth_r',aspect='auto',vmax=abs(cwtmatr).max(),vmin=-abs(cwtmatr).max())
+    plt.show()
+
+    return
+
+
+
 
 def main():
 
@@ -65,14 +147,22 @@ def main():
 #   Make a light curve of just transformed instrumental photometry
     make_multipanel_light_curve_transformed_phot()
 
+#   Perform a Lomb-Scargle periodogram analysis
+#   Note: Assumes you have scipy installed
+#   perform_LS_periodogram()
+
+#   Perform a Wavelet analysis
+#   Note: Assumes you have scipy installed
+#   perform_wavelet_analysis()
+
     return
 
 
 if __name__ == '__main__':
 
-    infile='tumi_2450_2458.txt'
+    infile='r_aqr.txt'
 
     main()
-    print "Done with examples.\nThank you for using AAVSO-analysis.\nhttp://github.com/seasidesparrow/AAVSO-analysis."
+    print("Done with examples.\nThank you for using AAVSO-analysis.\nhttp://github.com/seasidesparrow/AAVSO-analysis.\n\n")
 
 

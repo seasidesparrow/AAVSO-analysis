@@ -8,8 +8,8 @@ def fainterthans_repair(df):
         Wherever the Magnitude has a leading "<", remove it, and modify the
         value of Band to add a trailing "-fainter"
     """
-    df.loc[df.Magnitude.str.contains('<')==True,'Band']= df.loc[df.Magnitude.str.contains('<')==True,'Band']+'-fainter'
-    df.loc[df.Magnitude.str.contains('<')==True,'Magnitude']=df.loc[df.Magnitude.str.contains('<')==True,'Magnitude'].str.replace('<','')
+    df.loc[df.Magnitude.str.contains('<') == True,'Band'] = df.loc[df.Magnitude.str.contains('<') == True,'Band']+'-fainter'
+    df.loc[df.Magnitude.str.contains('<') == True,'Magnitude'] = df.loc[df.Magnitude.str.contains('<') == True,'Magnitude'].str.replace('<','')
     return df
 
 
@@ -18,8 +18,8 @@ def fainterthans_delete(df):
         Takes input data frame, and returns a Pandas DataFrame "df" having
         only positive data, with no fainter-than estimates.
     """
-    df=fainterthans_repair(df)
-    df=df.loc[df.Band.str.endswith('-fainter')==False]
+    df = fainterthans_repair(df)
+    df = df.loc[df.Band.str.endswith('-fainter') == False]
     return df
 
 
@@ -32,9 +32,9 @@ def nonstandard_filter_delete(df):
 
         See https://www.aavso.org/filters for a list of filters.
     """
-    fcut=['Blue-Vis.','Green-Vis.','Red-Vis.','Orange','Yellow-Vis.','O','']
+    fcut = ['Blue-Vis.','Green-Vis.','Red-Vis.','Orange','Yellow-Vis.','O','']
     for f in fcut:
-        df=df.loc[df.Band!=f]
+        df = df.loc[df.Band != f]
     return df
 
 
@@ -46,17 +46,17 @@ def jd_decimalyear_convert(df):
         light curves, but is not strictly accurate to more than a decimal
         place in the day fraction as the equation is only approximate.
     """
-    df.loc[:,'JD']=(1900.+(df.loc[:,'JD']-2415020.0)/365.25)
+    df.loc[:,'JD'] = (1900.+(df.loc[:,'JD']-2415020.0)/365.25)
     return df
 
 
-def jd_truncate(df,offset=2400000.0):
+def jd_truncate(df,offset = 2400000.0):
     """
         Takes the input Pandas DataFrame "df" and subtracts an offset.  The
         default offset is 2400000.0, but if an optional parameter "offset"
         is given, that will be used instead (e.g. "2400000.5")
     """
-    df.loc[:,'JD']=df.loc[:,'JD']-offset
+    df.loc[:,'JD'] = df.loc[:,'JD']-offset
     return df
 
 
@@ -67,8 +67,8 @@ def aavso_csv_load(infile):
         (the default) to empty string ''.  If infile is given without
         path, it is assumed to be in your current working directory.
     """
-    df=pd.read_csv(infile,low_memory=False)
-    df.fillna('',inplace=True)
+    df = pd.read_csv(infile,low_memory = False,error_bad_lines = False)
+    df.fillna('',inplace = True)
 
     return df
 
@@ -79,7 +79,7 @@ def observer_only(df,o):
         *only* the data from obscode in "o".  Note that if that observer
         code has no data, you will get an empty DataFrame returned!
     """
-    df=df.loc[df['Observer Code']==o]
+    df = df.loc[df['Observer Code'] == o]
     return df
 
 
@@ -88,7 +88,7 @@ def observer_delete(df,o):
         Takes input data frame, and returns a Pandas DataFrame "df" having
         none of the data from the AAVSO Observer Code in "o".
     """
-    df=df.loc[df['Observer Code']!=o]
+    df = df.loc[df['Observer Code'] != o]
     return df
 
 
@@ -98,7 +98,7 @@ def visual_estimates_only(df):
         only visual estimates.  May include fainter-than observations,
         so for visual positives only, you must also run fainterthans_delete.
     """
-    df=df.loc[df.Band.str.contains('Vis.')]
+    df = df.loc[df.Band.str.contains('Vis.')]
     return df
 
 
@@ -110,7 +110,7 @@ def transformed_only(df):
         March 01, so the column name is "Transfomed" rather than the correct
         "Transformed".  This will be edited if/when the issue is fixed.
     """
-    df=df.loc[df.Transfomed==1]
+    df = df.loc[df.Transfomed == 1]
     return df
 
 
@@ -120,7 +120,7 @@ def invalids_delete(df):
         only data marked with the Validation flags 'V' or 'Z'.  For a
         description of AAVSO Validation flags and their meanings, see:
     """
-    mask=((df['Validation Flag']=='V') | (df['Validation Flag']=='Z'))
+    mask = ((df['Validation Flag'] == 'V') | (df['Validation Flag'] == 'Z'))
     return df[mask]
 
 
@@ -130,7 +130,7 @@ def differentials_delete(df):
         Measurement Method of "DIFF" removed.  Useful if you didn't
         deselect DIFF-STEP data when you were downloading.
     """
-    mask=((df['Measurement Method']!='DIF'))
+    mask = ((df['Measurement Method'] != 'DIF'))
     return df[mask]
 
 
@@ -141,7 +141,7 @@ def differentials_keep(df):
         Useful for many binaries and pulsating stars with lots of
         available differential data.
     """
-    mask=((df['Measurement Method']=='DIF'))
+    mask = ((df['Measurement Method'] == 'DIF'))
     return df[mask]
 
 
@@ -151,7 +151,7 @@ def steps_delete(df):
         Measurement Method of "STEP" removed.  Useful if you didn't
         deselect DIFF-STEP data when you were downloading.
     """
-    mask=((df['Measurement Method']!='STEP'))
+    mask = ((df['Measurement Method'] != 'STEP'))
     return df[mask]
 
 
@@ -159,7 +159,7 @@ def filterlist_get(df):
     """
         Returns an array with a list of filters found in the DataFrame
     """
-    f=df.Band.unique()
+    f = df.Band.unique()
     return f
 
 
@@ -167,8 +167,8 @@ def observerlist_get(df):
     """
         Returns an array with all Observer Codes in the DataFrame
     """
-    obs=df['Observer Code'].unique()
-    obs=sorted(sorted(obs))
+    obs = df['Observer Code'].unique()
+    obs = sorted(sorted(obs))
     return obs
 
 
@@ -177,11 +177,11 @@ def observercounts_dict(df):
         Returns a dictionary with keys of observer codes, and values of
         the number of observations they contributed to this data set.
     """
-    ol=observerlist_get(df)
-    ot=df['Observer Code'].value_counts()
-    obstab={}
+    ol = observerlist_get(df)
+    ot = df['Observer Code'].value_counts()
+    obstab = {}
     for o in ol:
-        obstab[o]=ot[o]
+        obstab[o] = ot[o]
     return obstab
 
 
@@ -190,13 +190,13 @@ def midpoint_get(df):
         Returns the midpoint of JD in the dataset.  Can be used to set
         an offset t(0) suitable for time-series analysis
     """
-    jdmax=max(df.JD)
-    jdmin=min(df.JD)
-    jdmid=(jdmax+jdmin)/2.
+    jdmax = max(df.JD)
+    jdmin = min(df.JD)
+    jdmid = (jdmax+jdmin)/2.
     return jdmid
 
 
-def multipanel_file(df,nplots=4,xlabel='JD',ylabel='Mag.',title='',dts=300,imtype='png',outf='lightcurve.png'):
+def multipanel_file(df,nplots = 4,xlabel = 'JD',ylabel = 'Mag.',title = '',dts = 300,imtype = 'png',outf = 'lightcurve.png'):
     """
         Make a .png image file out of a multipanel lightcurve.  Output will be
         to the directory you launched python from, unless you use an absolute
@@ -205,20 +205,20 @@ def multipanel_file(df,nplots=4,xlabel='JD',ylabel='Mag.',title='',dts=300,imtyp
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    plotf=multipanel_lc(df,plt,nplots,xlabel,ylabel,title)
-    if(imtype=='png'):
-        plotf.savefig(outf,format=imtype,dpi=dts)
+    plotf = multipanel_lc(df,plt,nplots,xlabel,ylabel,title)
+    if(imtype == 'png'):
+        plotf.savefig(outf,format = imtype,dpi = dts)
     else:
         if(nplots>4):
-            ori='portrait'
+            ori = 'portrait'
         else:
-            ori='landscape'
-        plotf.savefig(outf,format=imtype,orientation=ori)
+            ori = 'landscape'
+        plotf.savefig(outf,format = imtype,orientation = ori)
     plt.close(plotf)
     return
 
 
-def multipanel_screen(df,nplots=4,xlabel='JD',ylabel='Mag.',title=''):
+def multipanel_screen(df,nplots = 4,xlabel = 'JD',ylabel = 'Mag.',title = ''):
     """
         Make a .png image file out of a multipanel lightcurve.  Output will be
         to the directory you launched python from, unless you use an absolute
@@ -226,7 +226,7 @@ def multipanel_screen(df,nplots=4,xlabel='JD',ylabel='Mag.',title=''):
     """
     import matplotlib.pyplot as plt
 
-    plotf=multipanel_lc(df,plt,nplots,xlabel,ylabel,title)
+    plotf = multipanel_lc(df,plt,nplots,xlabel,ylabel,title)
     plt.show()
 
     return
@@ -238,13 +238,18 @@ def multipanel_lc(df,plt,np,xl,yl,ti):
         directly by the user; use "multipanel_screen" for interactive plots, or
         "multipanel_file" for image file output to PNG, PS, or PDF.
     """
-    plotparm={'Vis.-fainter':('black','v',8),
+    import matplotlib.ticker as pt
+    plotparm = {'Vis.-fainter':('black','v',8),
         'Vis.' :('black','o',1),
         'U'    :('purple','o',2),
         'B'    :('blue','o',2),
         'V'    :('green','o',2),
         'R'    :('red','o',2),
         'I'    :('orange','o',2),
+        'RJ'    :('red','o',2),
+        'IJ'    :('orange','o',2),
+        'J'    :('yellow','o',2),
+        'H'    :('yellow','o',2),
         'TG'   :('green','s',8),
         'TB'   :('blue','s',8),
         'TR'   :('red','s',8),
@@ -256,34 +261,40 @@ def multipanel_lc(df,plt,np,xl,yl,ti):
         'Green-Vis.':('green','h',20)
     }
 
-    font={'family' : 'Serif','weight' : 'normal','size' : 8}
+    font = {'family' : 'Serif','weight' : 'normal','size' : 5}
     plt.rc('font',**font)
 
-    filters=filterlist_get(df)
+    filters = filterlist_get(df)
 
-    jdmax=max(df.JD)
-    jdmin=min(df.JD)
-    magmax=min(df.Magnitude)
-    magmin=max(df.Magnitude)
-    jdspan=jdmax-jdmin
-    tdelta=0.01*jdspan
-    jdmax=jdmax+tdelta
-    jdmin=jdmin-tdelta
-    ptspan=jdspan/np
+    jdmax = max(df.JD)
+    jdmin = min(df.JD)
+    jdspan = jdmax-jdmin
+    tdelta = 0.01*jdspan
+    jdmax = jdmax+tdelta
+    jdmin = jdmin-tdelta
+    ptspan = jdspan/np
 
-    p,ax=plt.subplots(nrows=np,sharex=False)
+    p,ax = plt.subplots(nrows = np,sharex = False)
 
     ax[0].set_title(ti)
     for i in range(0,np):
         for f in filters:
-            jd=df.loc[df.Band==f].JD
-            mag=df.loc[df.Band==f].Magnitude
-            ax[i].scatter(jd,mag,s=plotparm[f][2],marker=plotparm[f][1],color=plotparm[f][0])
-
+            jd = pd.to_numeric(df.loc[df.Band == f].JD)
+            magn = pd.to_numeric(df.loc[df.Band == f].Magnitude)
+            ax[i].scatter(jd,magn,s = plotparm[f][2],marker = plotparm[f][1],color = plotparm[f][0])
+        
+        loc  =  pt.MultipleLocator(base = 1.0)
         ax[i].set_ylim(ax[i].get_ylim()[::-1])
         ax[i].set_xlim((jdmin+(i*ptspan)),(jdmin+((i+1)*ptspan)))
+        ax[i].yaxis.set_major_locator(loc)
         ax[i].set_ylabel(yl)
-        ax[i].set_autoscale_on(False)
+        ax[i].set_autoscale_on(True)
     ax[(np-1)].set_xlabel(xl)
-    p.subplots_adjust(hspace=0.5)
+    p.subplots_adjust(hspace = 0.5)
     return p
+
+
+def extract_timeseries(df):
+    time = np.array(df.JD,dtype = 'float64')
+    mag = np.array(df.Magnitude,dtype = 'float64')
+    return time,mag
