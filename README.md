@@ -4,18 +4,18 @@ the AAVSO.  Uses the following packages: pandas, numpy, matplotlib.pyplot.
 
 Update: 2018 January 23 -- aavso-2.0 now available as pip-installable package:
 use 
-'''
+```
 
 pip install git+https://github.com/seasidesparrow/AAVSO-analysis.git
 
-''' 
+``` 
 to install.  You can then import all the functions using  
-'''
+```
 
 import aavso.aavso as aa
 help(aa)
 
-'''
+```
 -----------------------------------------------------------------------------
 
 Variable star data from the American Association of Variable Star Observers
