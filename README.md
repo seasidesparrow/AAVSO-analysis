@@ -12,8 +12,8 @@ pip install git+https://github.com/seasidesparrow/AAVSO-analysis.git
 to install.  You can then import all the functions using  
 '''
 
->>> import aavso.aavso as aa
->>> help(aa)
+import aavso.aavso as aa
+help(aa)
 
 '''
 -----------------------------------------------------------------------------
