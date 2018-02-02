@@ -15,7 +15,7 @@ def make_multipanel_light_curve_all_data():
                aa.nonstandard_filter_delete(
                aa.steps_delete(raw_data))))
 
-    aa.multipanel_file(clean_data,7,outf='r_aqr.png')
+    aa.multipanel_file(clean_data,7,outf='test_data.png')
 
     return
 
@@ -34,7 +34,7 @@ def make_multipanel_light_curve_vis_pos():
                aa.visual_estimates_only(raw_data))))
 
 
-    aa.multipanel_file(clean_data,4,imtype='png',outf='r_aqr_vis.png')
+    aa.multipanel_file(clean_data,4,imtype='png',outf='test_data_vis.png')
 
     return
 
@@ -52,7 +52,7 @@ def make_multipanel_light_curve_transformed_phot():
                aa.nonstandard_filter_delete(
                aa.transformed_only(raw_data))))
 
-    aa.multipanel_file(clean_data,5,outf='r_aqr_phot.png')
+    aa.multipanel_file(clean_data,5,outf='test_data_phot.png')
 
     return
 
@@ -160,7 +160,7 @@ def main():
 
 if __name__ == '__main__':
 
-    infile='r_aqr.txt'
+    infile='test_data.txt'
 
     main()
     print("Done with examples.\nThank you for using AAVSO-analysis.\nhttp://github.com/seasidesparrow/AAVSO-analysis.\n\n")
