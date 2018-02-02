@@ -7,7 +7,7 @@ def make_multipanel_light_curve_all_data():
     import pandas as pd
     import aavso.aavso as aa
 
-    raw_data=aavso.invalids_delete(
+    raw_data=aa.invalids_delete(
              aa.aavso_csv_load(infile))
 
     clean_data=aa.fainterthans_repair(
