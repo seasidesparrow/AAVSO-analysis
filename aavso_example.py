@@ -5,17 +5,17 @@
 def make_multipanel_light_curve_all_data():
     import numpy as np
     import pandas as pd
-    import aavso
+    import aavso.aavso as aa
 
     raw_data=aavso.invalids_delete(
-             aavso.aavso_csv_load(infile))
+             aa.aavso_csv_load(infile))
 
-    clean_data=aavso.fainterthans_repair(
-               aavso.differentials_delete(
-               aavso.nonstandard_filter_delete(
-               aavso.steps_delete(raw_data))))
+    clean_data=aa.fainterthans_repair(
+               aa.differentials_delete(
+               aa.nonstandard_filter_delete(
+               aa.steps_delete(raw_data))))
 
-    aavso.multipanel_file(clean_data,7,outf='r_aqr.png')
+    aa.multipanel_file(clean_data,7,outf='r_aqr.png')
 
     return
 
@@ -23,18 +23,18 @@ def make_multipanel_light_curve_all_data():
 def make_multipanel_light_curve_vis_pos():
     import numpy as np
     import pandas as pd
-    import aavso
+    import aavso.aavso as aa
 
-    raw_data=aavso.invalids_delete(
-             aavso.aavso_csv_load(infile))
+    raw_data=aa.invalids_delete(
+             aa.aavso_csv_load(infile))
 
-    clean_data=aavso.fainterthans_delete(
-               aavso.differentials_delete(
-               aavso.steps_delete(
-               aavso.visual_estimates_only(raw_data))))
+    clean_data=aa.fainterthans_delete(
+               aa.differentials_delete(
+               aa.steps_delete(
+               aa.visual_estimates_only(raw_data))))
 
 
-    aavso.multipanel_file(clean_data,4,imtype='png',outf='r_aqr_vis.png')
+    aa.multipanel_file(clean_data,4,imtype='png',outf='r_aqr_vis.png')
 
     return
 
@@ -42,17 +42,17 @@ def make_multipanel_light_curve_vis_pos():
 def make_multipanel_light_curve_transformed_phot():
     import numpy as np
     import pandas as pd
-    import aavso
+    import aavso.aavso as aa
 
-    raw_data=aavso.invalids_delete(
-             aavso.aavso_csv_load(infile))
+    raw_data=aa.invalids_delete(
+             aa.aavso_csv_load(infile))
 
-    clean_data=aavso.fainterthans_delete(
-               aavso.differentials_delete(
-               aavso.nonstandard_filter_delete(
-               aavso.transformed_only(raw_data))))
+    clean_data=aa.fainterthans_delete(
+               aa.differentials_delete(
+               aa.nonstandard_filter_delete(
+               aa.transformed_only(raw_data))))
 
-    aavso.multipanel_file(clean_data,5,outf='r_aqr_phot.png')
+    aa.multipanel_file(clean_data,5,outf='r_aqr_phot.png')
 
     return
 
@@ -62,21 +62,21 @@ def perform_LS_periodogram():
 #   as an example....
     import numpy as np
     import pandas as pd
-    import aavso
+    import aavso.aavso as aa
     from scipy.signal import lombscargle as ls
     import matplotlib.pyplot as plt
 
-    raw_data=aavso.invalids_delete(
-             aavso.aavso_csv_load(infile))
+    raw_data=aa.invalids_delete(
+             aa.aavso_csv_load(infile))
 
-    clean_data=aavso.fainterthans_delete(
-               aavso.differentials_delete(
-               aavso.steps_delete(
-               aavso.visual_estimates_only(raw_data))))
+    clean_data=aa.fainterthans_delete(
+               aa.differentials_delete(
+               aa.steps_delete(
+               aa.visual_estimates_only(raw_data))))
 
-    midpoint_jd=aavso.midpoint_get(clean_data)
+    midpoint_jd=aa.midpoint_get(clean_data)
 
-    (star_jd,star_magn)=aavso.extract_timeseries(clean_data)
+    (star_jd,star_magn)=aa.extract_timeseries(clean_data)
 
     star_jd=star_jd-midpoint_jd
 
@@ -105,21 +105,21 @@ def perform_LS_periodogram():
 def perform_wavelet_analysis():
     import numpy as np
     import pandas as pd
-    import aavso
+    import aavso.aavso as aa
     from scipy import signal
     import matplotlib.pyplot as plt
 
-    raw_data=aavso.invalids_delete(
-             aavso.aavso_csv_load(infile))
+    raw_data=aa.invalids_delete(
+             aa.aavso_csv_load(infile))
 
-    clean_data=aavso.fainterthans_delete(
-               aavso.differentials_delete(
-               aavso.steps_delete(
-               aavso.visual_estimates_only(raw_data))))
+    clean_data=aa.fainterthans_delete(
+               aa.differentials_delete(
+               aa.steps_delete(
+               aa.visual_estimates_only(raw_data))))
 
-    midpoint_jd=aavso.midpoint_get(clean_data)
+    midpoint_jd=aa.midpoint_get(clean_data)
 
-    (star_jd,star_magn)=aavso.extract_timeseries(clean_data)
+    (star_jd,star_magn)=aa.extract_timeseries(clean_data)
 
     star_jd=star_jd-midpoint_jd
 
